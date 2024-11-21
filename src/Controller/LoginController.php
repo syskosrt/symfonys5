@@ -17,7 +17,7 @@ class LoginController extends AbstractController
             return $this->json(['message' => 'Invalid credentials.'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $token = 'your_generated_token'; // Remplacez par un vrai token.
+        $token = $this->tokens->generateTokenForUser($user->getEmail());
         return $this->json(['token' => $token, 'user' => $user->getUserIdentifier()]);
     }
 }
