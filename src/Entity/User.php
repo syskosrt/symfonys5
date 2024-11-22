@@ -1,46 +1,41 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
-use App\Api\Processor\CreateUserProcessor;
-use App\Api\Resource\CreateUser;
-use App\Doctrine\Traits\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Doctrine\Trait\TimestampableTrait;
+use App\Doctrine\Trait\UuidTrait;
+use App\Enum\TableEnum;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity]
-#[ORM\UniqueConstraint(name: 'UNIQ_USER_IDENTIFIER_EMAIL', fields: ['email'])]
-#[Get]
-#[GetCollection]
-#[Post]
-#[Put]
-#[Delete]
-#[Post(input: CreateUser::class, processor: CreateUserProcessor::class)]
+#[ApiResource]
+#[ORM\Table(name: TableEnum::USER)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    use UuidTrait;
+    use TimestampableTrait, UuidTrait;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    public ?string $firstName = null;
+
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    public ?string $lastName = null;
+
+    #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     public ?string $email = null;
 
     #[ORM\Column]
-    public array $roles = [];
-
-    #[ORM\Column]
-    #[Ignore]
     public ?string $password = null;
 
-    public function __construct()
-    {
-        $this->defineUuid();
-    }
+    #[ORM\Column]
+    public array $roles = [];
 
     public function getUserIdentifier(): string
     {
@@ -62,5 +57,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    public function __construct()
+    {
+        $this->defineUuid();
     }
 }
