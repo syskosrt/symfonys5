@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
 use App\Api\Resource\CreateUserResource;
 use App\Entity\User;
+use App\Enum\RoleEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -29,7 +30,12 @@ final readonly class CreateUserProcessor implements ProcessorInterface
         $user->email = $data->email;
         $user->password = $this->hasher->hashPassword($user, $data->password);
 
-        // Vous pouvez également ajouter d'autres colonnes ici si nécessaire
+        // Ajout des rôles
+        $roles = $data->roles ?? []; // Récupère les rôles supplémentaires s'ils sont fournis
+        $roles[] = RoleEnum::ROLE_USER; // Assigne toujours le rôle ROLE_USER
+        $user->roles = array_unique($roles); // Évite les doublons dans les rôles
+
+        // Ajout des autres colonnes
         $user->firstName = $data->firstName ?? null;
         $user->lastName = $data->lastName ?? null;
 

@@ -21,8 +21,8 @@ final readonly class DeleteContentProcessor implements ProcessorInterface
         array $uriVariables = [],
         array $context = [],
     ): void {
-        // Rechercher le contenu par son identifiant
-        $content = $this->em->getRepository(Content::class)->find($uriVariables['id']);
+        // Rechercher le contenu par son UUID
+        $content = $this->em->getRepository(Content::class)->findOneBy(['uuid' => $uriVariables['uuid'] ?? null]);
         if (!$content) {
             throw new InvalidArgumentException('Content not found');
         }

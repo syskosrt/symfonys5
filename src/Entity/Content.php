@@ -2,12 +2,7 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Metadata\ApiFilter;
+
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -35,13 +30,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[Get]
 #[GetCollection]
 #[Post(input: CreateContentResource::class, processor: CreateContentProcessor::class)]
-#[Put(input: EditContentResource::class, processor: EditContentProcessor::class, security: 'is_granted("' . RoleEnum::ROLE_ADMIN . '") and object.author == user')]
-#[Delete(processor: DeleteContentProcessor::class, security: 'is_granted("' . RoleEnum::ROLE_ADMIN . '")')]
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial'])]
-#[ApiFilter(DateFilter::class, properties: ['createdAt'])]
-#[ApiFilter(BooleanFilter::class, properties: ['published'])]
-#[ApiFilter(NumericFilter::class, properties: ['views'])]
-#[ApiFilter(OrderFilter::class, properties: ['createdAt', 'title'])]
+#[Put(input: EditContentResource::class, processor: EditContentProcessor::class)]
+#[Delete(processor: DeleteContentProcessor::class)]
 class Content
 {
     use UuidTrait;
@@ -75,13 +65,13 @@ class Content
     public int $views = 0;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', nullable: false)]
+    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', nullable: false, onDelete: 'CASCADE')]
     public ?User $author = null;
 
     #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
     private ?string $slug = null;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'contents')]
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(
         name: 'content_tags',
         joinColumns: [
@@ -92,7 +82,6 @@ class Content
         ]
     )]
     private Collection $tagsCollection;
-
 
     public function __construct()
     {

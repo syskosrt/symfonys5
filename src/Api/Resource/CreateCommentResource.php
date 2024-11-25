@@ -5,7 +5,7 @@ namespace App\Api\Resource;
 use App\Entity\User;
 use App\Entity\Content;
 
-class CreateComment
+class CreateCommentResource
 {
     public ?string $comment = null;
     public ?User $author = null;

@@ -2,13 +2,18 @@
 
 namespace App\Entity;
 
+use App\Api\Resource\CreateUserResource;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Api\Processor\CreateUserProcessor;
-use App\Api\Resource\CreateUserResource;
+//use App\Api\Processor\EditUserProcessor;
+//use App\Api\Resource\EditUser;
+use App\Api\Processor\DeleteUserProcessor;
 use App\Doctrine\Trait\TimestampableTrait;
 use App\Doctrine\Trait\UuidTrait;
 use App\Enum\TableEnum;
@@ -24,6 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: TableEnum::USER)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[Post(input: CreateUserResource::class, processor: CreateUserProcessor::class)]
+//#[Put(input: EditUser::class, processor: EditUserProcessor::class)]
+#[Delete(processor: DeleteUserProcessor::class)]
 #[GetCollection]
 #[Get]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

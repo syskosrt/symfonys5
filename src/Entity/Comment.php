@@ -17,7 +17,7 @@ use ApiPlatform\Metadata\Put;
 use App\Api\Processor\CreateCommentProcessor;
 use App\Api\Processor\DeleteCommentProcessor;
 use App\Api\Processor\EditCommentProcessor;
-use App\Api\Resource\CreateComment;
+use App\Api\Resource\CreateCommentResource;
 use App\Api\Resource\EditCommentResource;
 use App\Doctrine\Trait\TimestampableTrait;
 use App\Doctrine\Trait\UuidTrait;
@@ -29,11 +29,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 #[ApiResource()]
 #[ORM\Table(name: TableEnum::COMMENT)]
-#[Post(input: CreateComment::class, processor: CreateCommentProcessor::class)]
+#[Post(input: CreateCommentResource::class, processor: CreateCommentProcessor::class)]
 #[Put(input: EditCommentResource::class, processor: EditCommentProcessor::class, security: 'is_granted("ROLE_USER") and object.author == user')]
 #[Get]
 #[GetCollection]
-#[Delete(processor: DeleteCommentProcessor::class, security: 'is_granted("ROLE_USER") and object.author == user')]
+#[Delete(processor: DeleteCommentProcessor::class)]
 // #[ApiFilter(SearchFilter::class, properties: ['comment' => 'partial', 'author.email' => 'exact', 'content.title' => 'partial'])]
 // #[ApiFilter(DateFilter::class, properties: ['createdAt'])]
 // #[ApiFilter(BooleanFilter::class, properties: ['published'])]
@@ -49,11 +49,11 @@ class Comment
     public ?string $comment = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', nullable: false)]
+    #[ORM\JoinColumn(name: 'author_uuid', referencedColumnName: 'uuid', nullable: false, onDelete: 'CASCADE')]
     public ?User $author = null;
 
     #[ORM\ManyToOne(targetEntity: Content::class)]
-    #[ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid', nullable: false)]
+    #[ORM\JoinColumn(name: 'content_uuid', referencedColumnName: 'uuid', nullable: false, onDelete: 'CASCADE')]
     public ?Content $content = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]

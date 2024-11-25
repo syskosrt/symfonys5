@@ -4,7 +4,7 @@ namespace App\Api\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Api\Resource\CreateComment;
+use App\Api\Resource\CreateCommentResource;
 use App\Entity\Comment;
 use App\Entity\Content;
 use App\Entity\User;
@@ -19,7 +19,7 @@ final readonly class CreateCommentProcessor implements ProcessorInterface
     ) {
     }
 
-    /** @param CreateComment $data */
+    /** @param CreateCommentResource $data */
     public function process(
         mixed $data,
         Operation $operation,
