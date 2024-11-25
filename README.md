@@ -1,51 +1,58 @@
-# Symfony Docker
+# Headless CMS
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework,
-with [FrankenPHP](https://frankenphp.dev) and [Caddy](https://caddyserver.com/) inside!
+## Description
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+This project is a Headless CMS developed with **Symfony 7.1** (compatible with 7.2) and **PHP 8.3**, designed to enable the creation, management, and distribution of content via a secure REST API. This CMS provides a centralized solution for content management while allowing dynamic consumption by various front-ends (web apps, mobile apps, etc.).
 
-## Getting Started
+## Key Features
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
-2. Run `docker compose build --no-cache` to build fresh images
-3. Run `docker compose up --pull always -d --wait` to set up and start a fresh Symfony project
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker compose down --remove-orphans` to stop the Docker containers.
+### User Management
+- **Administrators**:
+    - Create, edit, and delete content.
+    - Manage users (edit and delete).
+    - Delete comments.
+- **Subscribers**:
+    - Read content.
+    - Manage their own comments (create, edit, delete).
+- **Visitors**:
+    - Read content without authentication.
 
-## Features
+### Content Management
+- Manage articles with the following fields:
+    - Title.
+    - Cover image.
+    - Meta tags (`title` and `description`).
+    - Detailed content.
+    - Auto-generated unique slug.
+    - Associated tags.
+    - Author.
 
-* Production, development and CI ready
-* Just 1 service by default
-* Blazing-fast performance thanks to [the worker mode of FrankenPHP](https://github.com/dunglas/frankenphp/blob/main/docs/worker.md) (automatically enabled in prod mode)
-* [Installation of extra Docker Compose services](docs/extra-services.md) with Symfony Flex
-* Automatic HTTPS (in dev and prod)
-* HTTP/3 and [Early Hints](https://symfony.com/blog/new-in-symfony-6-3-early-hints) support
-* Real-time messaging thanks to a built-in [Mercure hub](https://symfony.com/doc/current/mercure.html)
-* [Vulcain](https://vulcain.rocks) support
-* Native [XDebug](docs/xdebug.md) integration
-* Super-readable configuration
+### Comment Management
+- Create and edit comments associated with content.
+- Track the author and the content of each comment.
 
-**Enjoy!**
+### Technical Features
+- Use **UUIDs** to uniquely identify entities.
+- Track creation and modification dates for all entities using reusable traits.
+- Secure REST API for all data interactions.
 
-## Docs
+## Requirements
 
-1. [Options available](docs/options.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Debugging with Xdebug](docs/xdebug.md)
-6. [TLS Certificates](docs/tls.md)
-7. [Using MySQL instead of PostgreSQL](docs/mysql.md)
-8. [Using Alpine Linux instead of Debian](docs/alpine.md)
-9. [Using a Makefile](docs/makefile.md)
-10. [Updating the template](docs/updating.md)
-11. [Troubleshooting](docs/troubleshooting.md)
+### Technical Environment
+- **PHP**: Version 8.3 or higher.
+- **Symfony**: Version 7.1 or 7.2.
+- **Database**: MySQL/MariaDB with UUID support.
+- **Dependency Manager**: Composer.
 
-## License
+### Required PHP Extensions
+- `ext-json`
+- `ext-pdo`
+- `ext-mbstring`
 
-Symfony Docker is available under the MIT License.
+## Installation
 
-## Credits
-
-Created by [Kévin Dunglas](https://dunglas.dev), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-username/headless-cms.git
+   cd headless-cms
+   
