@@ -4,7 +4,7 @@ namespace App\Api\Processor;
 
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProcessorInterface;
-use App\Api\Resource\CreateUser;
+use App\Api\Resource\CreateUserResource;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -14,35 +14,26 @@ final readonly class CreateUserProcessor implements ProcessorInterface
     public function __construct(
         private EntityManagerInterface $em,
         private UserPasswordHasherInterface $hasher,
-    ) {}
+    ) {
+    }
 
-    /** @param CreateUser $data */
+    /** @param CreateUserResource $data */
     public function process(
         mixed $data,
         Operation $operation,
         array $uriVariables = [],
         array $context = [],
     ): User {
-        if (!$data instanceof CreateUser) {
-            throw new \InvalidArgumentException('Expected instance of CreateUser');
-        }
-
+        // Créez un nouvel utilisateur à partir des données
         $user = new User();
-
-        // Assign the email
         $user->email = $data->email;
+        $user->password = $this->hasher->hashPassword($user, $data->password);
 
-        // Check that the password is not empty, then hash it
-        if (!empty($data->password)) {
-            $user->password = $this->hasher->hashPassword($user, $data->password);
-        } else {
-            throw new \InvalidArgumentException('Password cannot be empty');
-        }
+        // Vous pouvez également ajouter d'autres colonnes ici si nécessaire
+        $user->firstName = $data->firstName ?? null;
+        $user->lastName = $data->lastName ?? null;
 
-        // Set default roles if not provided
-        $user->roles = $data->roles ?? ['ROLE_USER'];
-
-        // Persist the user
+        // Persist et flush pour sauvegarder dans la base de données
         $this->em->persist($user);
         $this->em->flush();
 
